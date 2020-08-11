@@ -2,11 +2,14 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   addQuestion,
-  selectQuestions
+  selectQuestions,
+  statuses,
+  updateQuestion
 } from './rejectionSlice';
+import QuestionList from '../QuestionList/QuestionList';
 import styles from './Rejection.module.css';
 
-export function Rejection() {
+export default function Rejection() {
   const questions = useSelector(selectQuestions);
   const dispatch = useDispatch();
 
@@ -20,9 +23,11 @@ export function Rejection() {
         Add Question
       </button>
 
-      {questions.map(({ text }) => (
-        <div>{text}</div>
-      ))}
+      <QuestionList
+        questions={questions}
+        statuses={statuses}
+        updateQuestion={question => dispatch(updateQuestion(question))}
+      />
     </div>
   );
 }

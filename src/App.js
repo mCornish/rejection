@@ -1,5 +1,5 @@
 import React from 'react';
-import { Rejection } from './features/rejection/Rejection';
+import Rejection from './features/Rejection/Rejection';
 import './App.css';
 
 function App() {

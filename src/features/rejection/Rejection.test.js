@@ -3,7 +3,8 @@ import rejection, {
   defaultQuestion,
   initialState,
   name,
-  selectQuestions
+  selectQuestions,
+  updateQuestion
 } from './rejectionSlice';
 
 describe('rejection reducer', () => {
@@ -19,7 +20,7 @@ describe('rejection reducer', () => {
 
     const actual = selectQuestions(rootState);
     const expected = [defaultQuestion];
-    expect(actual).toEqual(expected);
+    expect(actual.text).toEqual(expected.text);
   });
 
   it('should add given question for ADD QUESTION with argument', () => {
@@ -28,6 +29,21 @@ describe('rejection reducer', () => {
 
     const actual = selectQuestions(rootState);
     const expected = [{ text: 'Can I have a car?' }];
+    expect(actual.text).toEqual(expected.text);
+  });
+
+  it('should handle UPDATE QUESTION', () => {
+    const initial = rejection(initialState, addQuestion());
+    const rootState = { [name]: initial };
+
+    const question = selectQuestions(rootState)[0];
+    const updatedQuestion = { ...question, askee: 'Mom' };
+
+    const nextState = rejection(initial, updateQuestion(updatedQuestion));
+    const testState = { [name]: nextState };
+
+    const actual = selectQuestions(testState);
+    const expected = [updatedQuestion];
     expect(actual).toEqual(expected);
   });
 });
