@@ -31,7 +31,7 @@ export const rejectionSlice = createSlice({
         payload: {
           text,
           id: uuid(),
-          timestamp: (new Date()).getMilliseconds()
+          timestamp: Number(new Date())
         }
       })
     },

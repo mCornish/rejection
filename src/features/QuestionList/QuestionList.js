@@ -6,6 +6,7 @@ import Question from '../Question/Question';
 export default function QuestionList({ questions, statuses, updateQuestion }) {
   const accept = question => () => updateQuestion({ ...question, status: statuses.accept });
   const reject = question => () => updateQuestion({ ...question, status: statuses.reject });
+  const save = question => (text) => updateQuestion({ ...question, text})
 
   return (
     <div>
@@ -14,6 +15,7 @@ export default function QuestionList({ questions, statuses, updateQuestion }) {
           key={question.id}
           accept={accept(question)}
           reject={reject(question)}
+          save={save(question)}
           {...question}
         />
       ))}
