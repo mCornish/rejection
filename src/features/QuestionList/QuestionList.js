@@ -3,10 +3,16 @@ import PropTypes from 'prop-types';
 import Question from '../Question/Question';
 // import styles from './QuestionList.module.css';
 
-export default function QuestionList({ questions, statuses, updateQuestion }) {
+export default function QuestionList({
+  questions,
+  removeQuestion,
+  statuses,
+  updateQuestion
+}) {
   const accept = question => () => updateQuestion({ ...question, status: statuses.accept });
   const reject = question => () => updateQuestion({ ...question, status: statuses.reject });
-  const save = question => (text) => updateQuestion({ ...question, text})
+  const remove = question => () => removeQuestion(question);
+  const save = question => (text, askee) => updateQuestion({ ...question, askee, text })
 
   return (
     <div>
@@ -15,6 +21,7 @@ export default function QuestionList({ questions, statuses, updateQuestion }) {
           key={question.id}
           accept={accept(question)}
           reject={reject(question)}
+          remove={remove(question)}
           save={save(question)}
           {...question}
         />
@@ -33,10 +40,11 @@ QuestionList.propTypes = {
       text: PropTypes.string
     })
   ).isRequired,
+  removeQuestion: PropTypes.func.isRequired,
   statuses: PropTypes.shape({
     accept: PropTypes.string,
     default: PropTypes.string,
     reject: PropTypes.string,
-  }),
+  }).isRequired,
   updateQuestion: PropTypes.func.isRequired
 }

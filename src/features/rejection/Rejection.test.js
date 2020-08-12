@@ -3,6 +3,7 @@ import rejection, {
   defaultQuestion,
   initialState,
   name,
+  removeQuestion,
   selectQuestions,
   updateQuestion
 } from './rejectionSlice';
@@ -44,6 +45,20 @@ describe('rejection reducer', () => {
 
     const actual = selectQuestions(testState);
     const expected = [updatedQuestion];
+    expect(actual).toEqual(expected);
+  });
+
+  it('should handle REMOVE QUESTION', () => {
+    const initial = rejection(initialState, addQuestion());
+    const rootState = { [name]: initial };
+
+    const question = selectQuestions(rootState)[0];
+
+    const nextState = rejection(initial, removeQuestion(question));
+    const testState = { [name]: nextState };
+
+    const actual = selectQuestions(testState);
+    const expected = [];
     expect(actual).toEqual(expected);
   });
 });

@@ -7,20 +7,27 @@ export default function Question({
   accept,
   askee,
   reject,
+  remove,
   save,
   status,
   text,
   timestamp
 }) {
-  let input;
-  const [isEditing, setIsEditing] = useState(true);
+  let textInput, askeeInput;
+  const [isEditing, setIsEditing] = useState(!(askee && text));
 
   return isEditing ? (
     <div>
+      <button onClick={remove}>Delete</button>
       <input
         placeholder="Can I drive your Mercedes?"
-        ref={node => (input = node)}
-        // onChange={(e.target.value) => input = e.target.value}
+        ref={node => (textInput = node)}
+        defaultValue={text}
+      />
+      <input
+        placeholder="Lewis Hamilton"
+        ref={node => (askeeInput = node)}
+        defaultValue={askee}
       />
       <button onClick={handleSave}>Save</button>
     </div>
@@ -34,10 +41,10 @@ export default function Question({
   );
 
   function handleSave() {
-    console.log("handleSave -> input", input)
-    save(input.value);
-    input.value = '';
+    save(textInput.value, askeeInput.value);
     setIsEditing(false);
+    textInput.value = '';
+    askeeInput.value = '';
   }
 }
 

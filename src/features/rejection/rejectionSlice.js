@@ -1,8 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { v4 as uuid } from 'uuid';
-
-// Can't use due to CRA bug: https://github.com/facebook/create-react-app/pull/8768
-// import { nanoid } from 'nanoid';
+import { createSlice, nanoid } from '@reduxjs/toolkit';
 
 export const name = 'rejection';
 export const statuses = {
@@ -35,13 +31,19 @@ export const rejectionSlice = createSlice({
       prepare: ({ text } = {}) => ({
         payload: {
           text,
-          id: uuid(),
+          id: nanoid(),
           status: statuses.default,
           timestamp: Number(new Date())
         }
       })
     },
+    removeQuestion: (state, { payload }) => {
+      if (!payload) return state;
+      const questions = state.questions.filter(({ id }) => id !== payload.id);
+      return { ...state, questions };
+    },
     updateQuestion: (state, { payload }) => {
+      if (!payload) return state;
       const applyUpdate = (question) => question.id === payload.id ? payload : question;
       const questions = state.questions.map(applyUpdate);
       return {...state, questions };
@@ -49,7 +51,7 @@ export const rejectionSlice = createSlice({
   },
 });
 
-export const { addQuestion, updateQuestion } = rejectionSlice.actions;
+export const { addQuestion, removeQuestion, updateQuestion } = rejectionSlice.actions;
 
 export const selectQuestions = state => state.rejection.questions;
 export const selectScore = state => state.rejection.questions.reduce(questionsToScore, 0);
