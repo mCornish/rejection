@@ -6,10 +6,15 @@ import { v4 as uuid } from 'uuid';
 
 export const name = 'rejection';
 export const statuses = {
+  default: 'Unanswered',
   accept: 'Accepted',
   reject: 'Rejected',
-  default: 'Unanswered'
 };
+export const statusPoints = {
+  [statuses.default]: 0,
+  [statuses.accept]: 1,
+  [statuses.reject]: 10,
+}
 
 export const initialState = {
   questions: []
@@ -31,6 +36,7 @@ export const rejectionSlice = createSlice({
         payload: {
           text,
           id: uuid(),
+          status: statuses.default,
           timestamp: Number(new Date())
         }
       })
@@ -46,5 +52,11 @@ export const rejectionSlice = createSlice({
 export const { addQuestion, updateQuestion } = rejectionSlice.actions;
 
 export const selectQuestions = state => state.rejection.questions;
+export const selectScore = state => state.rejection.questions.reduce(questionsToScore, 0);
 
 export default rejectionSlice.reducer;
+
+function questionsToScore(score, question) {
+  const points = statusPoints[question.status];
+  return score + points;
+}

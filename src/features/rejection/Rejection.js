@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   addQuestion,
   selectQuestions,
+  selectScore,
   statuses,
   updateQuestion
 } from './rejectionSlice';
@@ -11,10 +12,13 @@ import styles from './Rejection.module.css';
 
 export default function Rejection() {
   const questions = useSelector(selectQuestions);
+  const score = useSelector(selectScore);
   const dispatch = useDispatch();
 
   return (
     <div>
+      <div>Score: {score}</div>
+
       <button
         className={styles.button}
         aria-label="Add question"
