@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Question from '../Question/Question';
-// import styles from './QuestionList.module.css';
+import styles from './QuestionList.module.css';
 
 export default function QuestionList({
   questions,
@@ -12,10 +12,17 @@ export default function QuestionList({
   const accept = question => () => updateQuestion({ ...question, status: statuses.accept });
   const reject = question => () => updateQuestion({ ...question, status: statuses.reject });
   const remove = question => () => removeQuestion(question);
-  const save = question => (text, askee) => updateQuestion({ ...question, askee, text })
+  const save = question => (text, askee) => updateQuestion({ ...question, askee, text });
+
+  const columnCount = questions.length >= 4 ? 4 : questions.length;
 
   return (
-    <div>
+    <div
+      className={styles.grid}
+      style={{
+        gridTemplateColumns: `repeat(${columnCount}, 1fr)`
+      }}
+    >
       {questions.map(question => (
         <Question
           key={question.id}

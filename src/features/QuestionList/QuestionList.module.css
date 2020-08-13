@@ -1,0 +1,7 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 5em;
+  justify-items: center;
+  padding: 2em 5em;
+}

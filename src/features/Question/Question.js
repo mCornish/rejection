@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import styles from '../../Base.module.css';
+import { statuses } from '../Rejection/rejectionSlice';
+import styles from './Question.module.css';
 
 export default function Question({
   accept,
@@ -17,7 +18,7 @@ export default function Question({
   const [isEditing, setIsEditing] = useState(!(askee && text));
 
   return isEditing ? (
-    <div>
+    <div className={`${styles.container} ${statusClass(status)}`}>
       <button onClick={remove}>Delete</button>
       <input
         placeholder="Can I drive your Mercedes?"
@@ -32,7 +33,7 @@ export default function Question({
       <button onClick={handleSave}>Save</button>
     </div>
   ) : (
-    <div className={styles.row}>
+    <div className={styles.container}>
       <div>{moment(timestamp).fromNow()}</div>
       <div>{text}</div>
       <button onClick={reject}>Rejected</button>
@@ -45,6 +46,12 @@ export default function Question({
     setIsEditing(false);
     textInput.value = '';
     askeeInput.value = '';
+  }
+
+  function statusClass(status) {
+    if (status === statuses.accept) return styles.accepted;
+    if (status === statuses.reject) return styles.rejected;
+    return '';
   }
 }
 
