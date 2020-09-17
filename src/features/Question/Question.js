@@ -4,6 +4,8 @@ import moment from 'moment';
 import { statuses } from '../Rejection/rejectionSlice';
 import styles from './Question.module.css';
 
+import EditableText from '../EditableText/EditableText';
+
 export default function Question({
   accept,
   askee,
@@ -14,38 +16,87 @@ export default function Question({
   text,
   timestamp
 }) {
-  let textInput, askeeInput;
-  const [isEditing, setIsEditing] = useState(!(askee && text));
+  const [isActive, setIsActive] = useState(false);
 
-  return isEditing ? (
-    <div className={`${styles.container} ${statusClass(status)}`}>
-      <button onClick={remove}>Delete</button>
-      <input
-        placeholder="Can I drive your Mercedes?"
-        ref={node => (textInput = node)}
-        defaultValue={text}
-      />
-      <input
-        placeholder="Lewis Hamilton"
-        ref={node => (askeeInput = node)}
-        defaultValue={askee}
-      />
-      <button onClick={handleSave}>Save</button>
-    </div>
-  ) : (
-    <div className={styles.container}>
-      <div>{moment(timestamp).fromNow()}</div>
-      <div>{text}</div>
-      <button onClick={reject}>Rejected</button>
-      <button onClick={accept}>Accepted</button>
+  return (
+    <div
+      onMouseEnter={() => setIsActive(true)}
+      onMouseLeave={() => setIsActive(false)}
+      className={`${styles.container} ${statusClass(status)}`}
+    >
+      <button onClick={remove} className={styles.closeBtn}>X</button>
+
+      <div className={styles.content}>
+        <div>
+          <span className={styles.timestamp}><strong>{formatTimestamp(timestamp)}</strong></span>
+          <span>, I asked </span>
+          <EditableText
+            text={askee}
+            onSave={handleAskeeSave}
+            placeholder="Lewis Hamilton"
+            isActive={isActive}
+            defaultIsEditing={!askee}
+            showCancel={!!askee}
+          />
+          <span>, "</span>
+          {!text && (
+            <span>Question: </span>
+          )}
+          <EditableText
+            text={text}
+            onSave={handleTextSave}
+            placeholder="Can I drive your Mercedes?"
+            isActive={isActive}
+            defaultIsEditing={!text}
+            showCancel={!!text}
+          />
+          <span>," and </span>
+          {status === statuses.default ? (
+            <span>{'I\'m waiting to hear back. 🤔'}</span>
+          ) : (
+            <span>{`they said "${status === statuses.accept ? 'Yes 😞' : 'No! 😄🎉'}"`}</span>
+          )}
+        </div>
+      </div>
+      
+      {(status === statuses.default || isActive) && (
+          status === statuses.default ? (
+            <div className={`${styles.buttons}`}>
+              <button
+                onClick={reject}
+                className={`${styles.rejectBtn}`}
+              >Rejected</button>
+              <button
+                onClick={accept}
+                className={`${styles.acceptBtn}`}
+              >Accepted</button>
+            </div>
+          ) : (
+            <div className={`${styles.buttons}`}>
+              <button
+                onClick={status === statuses.reject ? accept : reject}
+                className={`${status === statuses.reject ? styles.acceptBtn : styles.rejectBtn}`}
+              >Actually, I got {status === statuses.reject ? 'Rejected' : 'Accepted'}</button>
+            </div>
+          )
+      )}
     </div>
   );
 
-  function handleSave() {
-    save(textInput.value, askeeInput.value);
-    setIsEditing(false);
-    textInput.value = '';
-    askeeInput.value = '';
+  function formatTimestamp(date) {
+    const dateString = moment(timestamp).fromNow();
+    return dateString[0].toUpperCase() + dateString.slice(1);
+  }
+
+  function handleAskeeSave(value) {
+    save({ askee: value });
+  }
+
+  function handleTextSave(value) {
+    save({ text: value });
+    // setIsEditing(false);
+    // textInput.value = '';
+    // askeeInput.value = '';
   }
 
   function statusClass(status) {

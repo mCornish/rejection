@@ -1,6 +1,69 @@
 .container {
+  position: relative;
   display: flex;
   flex-direction: column;
-  padding: 1em;
-  border: 3px solid black;
+  border-width: 3px;
+  border-style: solid;
+}
+
+.accepted {
+  border-color: #8c3d9a;
+  background-color: #1c0d1f;
+}
+.rejected {
+  border-color: #2291c6;
+  background-color: #0b1f29;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: .5em 1em;
+  
+  background-color: transparent;
+  font-weight: bold;
+  transition: all .2s ease;
+}
+.accepted > .closeBtn {
+  color: #8c3d9a;
+}
+.rejected > .closeBtn {
+  color: #2291c6;
+}
+.closeBtn:hover {
+  color: rgba(255,255,255,.8);
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 2em;
+}
+
+.buttons {
+  position: absolute;
+  display: flex;
+  bottom: 0;
+  left: -3px;
+  width: calc(100% + 6px);
+  transform: translateY(100%);
+  /* border: 3px solid rgba(255,255,255,.9); */
+}
+.buttons button {
+  width: 100%;
+  transition: all .2s ease;
+}
+.acceptBtn:hover {
+  background-color: #8c3d9a;
+  color: rgba(255,255,255,.8);
+}
+.rejectBtn:hover {
+  background-color: #2291c6;
+  color: rgba(255,255,255,.8);
+}
+
+.timestamp {
+  margin-top: auto;
 }

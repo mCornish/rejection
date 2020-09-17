@@ -1,0 +1,35 @@
+.form {
+  display: flex;
+  justify-content: center;
+  padding: .5em;
+}
+.form input {
+  color: rgba(255,255,255,.9);
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: center;
+}
+.form button {
+  margin-left: 1em;
+}
+
+.savedText {
+  visibility: hidden;
+}
+.savedText.isActive {
+  visibility: visible;
+}
+
+.editable {
+  padding: 0;
+  color: rgba(255,255,255,.9);
+  font-weight: bold;
+  background-color: transparent;
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent;
+  transition: all .2s ease;
+}
+.editable.isActive {
+  border-bottom-color: rgba(255,255,255,.9);
+}

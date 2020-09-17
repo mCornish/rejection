@@ -12,7 +12,10 @@ export default function QuestionList({
   const accept = question => () => updateQuestion({ ...question, status: statuses.accept });
   const reject = question => () => updateQuestion({ ...question, status: statuses.reject });
   const remove = question => () => removeQuestion(question);
-  const save = question => (text, askee) => updateQuestion({ ...question, askee, text });
+  const save = question => ({
+    text = question.text,
+    askee = question.askee
+  } = {}) => updateQuestion({ ...question, askee, text });
 
   const columnCount = questions.length >= 4 ? 4 : questions.length;
 

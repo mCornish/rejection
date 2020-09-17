@@ -1,3 +1,33 @@
 .App {
+  min-height: 100vh;
+  background-color: rgba(0,0,0,.95);
   text-align: center;
+  color: rgba(255,255,255,.9);
 }
+
+input {
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(255,255,255,.9);
+}
+input:focus {
+  /* background-color: rgba(255,255,255,.9); */
+  /* color: rgba(0,0,0,.95); */
+  outline: 0;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+  font-size: 1rem;
+}
+button.editable {
+  color: rgba(255,255,255,.9);
+  background-color: transparent;
+  text-decoration: underline;
+}
+/* button.is-disabled {
+  background-color: rgba(255,255,255,.5);
+  cursor: default;
+  pointer-events: none;
+} */
