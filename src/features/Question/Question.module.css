@@ -2,6 +2,10 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  justify-items: center;
+  align-items: center;
+  width: 50%;
+  margin-top: 3em;
   border-width: 3px;
   border-style: solid;
 }

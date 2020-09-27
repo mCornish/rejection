@@ -8,7 +8,6 @@ export default function EditableText({
   onChange = () => {},
   onSave = () => {},
   placeholder,
-  showCancel = true,
   text = '',
 }) {
   let textInput;
@@ -22,24 +21,18 @@ export default function EditableText({
       textInput.focus();
       textInput.select();
     }
-  }, [isEditing]);
+  }, [isEditing, textInput]);
 
   return isEditing ? (
     <div className={`EditableText ${styles.form}`}>
       <input
         ref={node => (textInput = node)}
         onChange={() => handleChange(textInput.value)}
-        onBlur={() => setIsEditing(false)}
+        onBlur={() => handleBlur(textInput.value)}
         placeholder={placeholder}
         defaultValue={text}
       />
       <span className={`${styles.savedText} ${isSaved ? styles.isActive : ''}`}>Saved!</span>
-
-      {/* <button onClick={() => save(textInput.value)}>Save</button>
-
-      {showCancel && (
-        <button onClick={cancel}>Cancel</button>
-      )} */}
     </div>
   ) : (
     <button
@@ -48,18 +41,13 @@ export default function EditableText({
     >{text}</button>
   );
 
-  function cancel() {
-    textInput.value = text;
-    setIsEditing(false);
-  }
-
   function handleChange(value) {
     onChange(value);
     save(value);
   }
 
-  function handleBlur() {
-
+  function handleBlur(value) {
+    if (value) setIsEditing(false);
   }
 
   async function save(value) {

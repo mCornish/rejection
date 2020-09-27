@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   addQuestion,
@@ -16,24 +16,29 @@ export default function Rejection() {
   const questions = useSelector(selectQuestions).slice().sort(timestampSort);
   const score = useSelector(selectScore);
 
-  return (
-    <div>
-      <div>Score: {score}</div>
+  const [activeQuestionId, setActiveQuestionId] = useState(null);
 
-      <button
-        className={styles.button}
-        aria-label="Add question"
-        onClick={() => dispatch(addQuestion())}
-        disabled={!(questions[0] || {}).text}
-      >
-        Add Question
-      </button>
+  return (
+    <div onClick={() => setActiveQuestionId(null)}>
+      <div className={styles.score}>Score: {score}</div>
+
+      {(questions[0] || {}).status !== statuses.default && (
+        <button
+          className={styles.addQuestion}
+          aria-label="Add question"
+          onClick={() => dispatch(addQuestion())}
+        >
+          + Add Question
+        </button>
+      )}
 
       <QuestionList
         questions={questions}
         statuses={statuses}
         removeQuestion={question => dispatch(removeQuestion(question))}
         updateQuestion={question => dispatch(updateQuestion(question))}
+        setActiveQuestionId={setActiveQuestionId}
+        activeQuestionId={activeQuestionId}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { statuses } from '../Rejection/rejectionSlice';
@@ -9,6 +9,9 @@ import EditableText from '../EditableText/EditableText';
 export default function Question({
   accept,
   askee,
+  isActive,
+  id,
+  onClick = () => {},
   reject,
   remove,
   save,
@@ -16,13 +19,19 @@ export default function Question({
   text,
   timestamp
 }) {
-  const [isActive, setIsActive] = useState(false);
+  const [hoverActive, setHoverActive] = useState(false);
+  const [clickedActive, setClickedActive] = useState(isActive);
+
+  useEffect(() => {
+    setClickedActive(isActive);
+  }, [isActive]);
 
   return (
     <div
-      onMouseEnter={() => setIsActive(true)}
-      onMouseLeave={() => setIsActive(false)}
-      className={`${styles.container} ${statusClass(status)}`}
+      onClick={handleClick}
+      onMouseEnter={() => setHoverActive(true)}
+      onMouseLeave={() => setHoverActive(false)}
+      className={`Question ${styles.container} ${statusClass(status)}`}
     >
       <button onClick={remove} className={styles.closeBtn}>X</button>
 
@@ -34,21 +43,19 @@ export default function Question({
             text={askee}
             onSave={handleAskeeSave}
             placeholder="Lewis Hamilton"
-            isActive={isActive}
+            isActive={hoverActive || clickedActive}
             defaultIsEditing={!askee}
-            showCancel={!!askee}
           />
           <span>, "</span>
           {!text && (
-            <span>Question: </span>
+            <span><br/>Question: </span>
           )}
           <EditableText
             text={text}
             onSave={handleTextSave}
             placeholder="Can I drive your Mercedes?"
-            isActive={isActive}
+            isActive={hoverActive || clickedActive}
             defaultIsEditing={!text}
-            showCancel={!!text}
           />
           <span>," and </span>
           {status === statuses.default ? (
@@ -59,7 +66,7 @@ export default function Question({
         </div>
       </div>
       
-      {(status === statuses.default || isActive) && (
+      {(status === statuses.default || hoverActive || clickedActive) && (
           status === statuses.default ? (
             <div className={`${styles.buttons}`}>
               <button
@@ -92,11 +99,13 @@ export default function Question({
     save({ askee: value });
   }
 
+  function handleClick(e) {
+    e.stopPropagation();
+    onClick(id);
+  }
+
   function handleTextSave(value) {
     save({ text: value });
-    // setIsEditing(false);
-    // textInput.value = '';
-    // askeeInput.value = '';
   }
 
   function statusClass(status) {

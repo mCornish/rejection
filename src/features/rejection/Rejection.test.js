@@ -5,6 +5,9 @@ import rejection, {
   name,
   removeQuestion,
   selectQuestions,
+  selectScore,
+  statuses,
+  statusPoints,
   updateQuestion
 } from './rejectionSlice';
 
@@ -59,6 +62,45 @@ describe('rejection reducer', () => {
 
     const actual = selectQuestions(testState);
     const expected = [];
+    expect(actual).toEqual(expected);
+  });
+});
+
+describe('selectScore', () => {
+  it('should have initial score of 0', () => {
+    const initial = rejection(initialState, addQuestion());
+    const rootState = { [name]: initial };
+
+    const actual = selectScore(rootState);
+    const expected = statusPoints[statuses.default];
+    expect(actual).toEqual(expected);
+  });
+
+  it('should add correct score for rejection', () => {
+    const initial = rejection(initialState, addQuestion());
+    const rootState = { [name]: initial };
+
+    const question = selectQuestions(rootState)[0];
+    const updatedQuestion = { ...question, status: statuses.reject };
+
+    const nextState = { [name]: rejection(initial, updateQuestion(updatedQuestion)) };
+
+    const actual = selectScore(nextState);
+    const expected = statusPoints[statuses.reject];
+    expect(actual).toEqual(expected);
+  });
+
+  it('should add correct score for acceptance', () => {
+    const initial = rejection(initialState, addQuestion());
+    const rootState = { [name]: initial };
+
+    const question = selectQuestions(rootState)[0];
+    const updatedQuestion = { ...question, status: statuses.accept };
+
+    const nextState = { [name]: rejection(initial, updateQuestion(updatedQuestion)) };
+
+    const actual = selectScore(nextState);
+    const expected = statusPoints[statuses.accept];
     expect(actual).toEqual(expected);
   });
 });

@@ -1,4 +1,5 @@
-import { createSlice, nanoid } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import cuid from 'cuid';
 
 export const name = 'rejection';
 export const statuses = {
@@ -6,11 +7,7 @@ export const statuses = {
   accept: 'Accepted',
   reject: 'Rejected',
 };
-export const statusPoints = {
-  [statuses.default]: 0,
-  [statuses.accept]: 1,
-  [statuses.reject]: 10,
-}
+
 
 export const initialState = {
   questions: []
@@ -26,14 +23,18 @@ export const rejectionSlice = createSlice({
   reducers: {
     addQuestion: {
       reducer: (state, { payload = defaultQuestion }) => {
+        // this is the same, I think?: state.questions = state.questions.push(payload);
         return {...state, questions: state.questions.concat(payload) };
       },
-      prepare: ({ text } = {}) => ({
+      // you should do anything impure as default values
+      // to make your unit testing easier (you can still get)
+      // deterministic values for them
+      prepare: ({ text, id = cuid(), timestamp = Date.now() } = {}) => ({
         payload: {
           text,
-          id: nanoid(),
+          id,
           status: statuses.default,
-          timestamp: Number(new Date())
+          timestamp,
         }
       })
     },
@@ -57,6 +58,12 @@ export const selectQuestions = state => state.rejection.questions;
 export const selectScore = state => state.rejection.questions.reduce(questionsToScore, 0);
 
 export default rejectionSlice.reducer;
+
+export const statusPoints = {
+  [statuses.default]: 0,
+  [statuses.accept]: 1,
+  [statuses.reject]: 10,
+};
 
 function questionsToScore(score, question) {
   const points = statusPoints[question.status];

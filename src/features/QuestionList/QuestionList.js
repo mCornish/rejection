@@ -7,7 +7,9 @@ export default function QuestionList({
   questions,
   removeQuestion,
   statuses,
-  updateQuestion
+  updateQuestion,
+  activeQuestionId,
+  setActiveQuestionId,
 }) {
   const accept = question => () => updateQuestion({ ...question, status: statuses.accept });
   const reject = question => () => updateQuestion({ ...question, status: statuses.reject });
@@ -17,14 +19,14 @@ export default function QuestionList({
     askee = question.askee
   } = {}) => updateQuestion({ ...question, askee, text });
 
-  const columnCount = questions.length >= 4 ? 4 : questions.length;
+  // const columnCount = questions.length >= 4 ? 4 : questions.length;
 
   return (
     <div
-      className={styles.grid}
-      style={{
-        gridTemplateColumns: `repeat(${columnCount}, 1fr)`
-      }}
+      className={styles.list}
+      // style={{
+      //   gridTemplateColumns: `repeat(${columnCount}, 1fr)`
+      // }}
     >
       {questions.map(question => (
         <Question
@@ -33,6 +35,8 @@ export default function QuestionList({
           reject={reject(question)}
           remove={remove(question)}
           save={save(question)}
+          onClick={() => setActiveQuestionId(question.id)}
+          isActive={activeQuestionId === question.id}
           {...question}
         />
       ))}
