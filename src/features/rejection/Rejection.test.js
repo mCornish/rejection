@@ -1,106 +1,48 @@
-import rejection, {
-  addQuestion,
-  defaultQuestion,
-  initialState,
-  name,
-  removeQuestion,
-  selectQuestions,
-  selectScore,
-  statuses,
-  statusPoints,
-  updateQuestion
-} from './rejectionSlice';
+import React from 'react';
+import { render, fireEvent, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
+import Rejection from './Rejection';
 
-describe('rejection reducer', () => {
-  it('has initial state', () => {
-    const actual = rejection(undefined, {});
-    const expected = initialState;
-    expect(actual).toEqual(expected);
+const QUESTION_BUTTON_NAME = 'Add question';
+const QUESTION_LIST_NAME = 'questions';
+const QUESTION_NAME = 'question';
+const SCORE_NAME = 'score';
+
+describe('Rejection', () => {
+  test('renders initial state', () => {
+    const { getByRole } = render(
+      <Rejection />
+    );
+
+    const scoreElement = getByRole('generic', { name: SCORE_NAME });
+    expect(scoreElement).toHaveTextContent('Score: 0');
+
+    const addQuestionElement = getByRole('button', { name: QUESTION_BUTTON_NAME });
+    expect(addQuestionElement).toBeInTheDocument();
+
+    const questionListElement = getByRole('list', { name: QUESTION_LIST_NAME });
+    expect(questionListElement).toBeInTheDocument();
   });
 
-  it('should use default question for ADD QUESTION with no arguments', () => {
-    const nextState = rejection(initialState, addQuestion());
-    const rootState = { [name]: nextState };
+  test('adds question', async () => {
+    const questions = [{ id: '1', timestamp: Date.now() }];
+    const addQuestion = jest.fn(() => questions.push({}));
 
-    const actual = selectQuestions(rootState);
-    const expected = [defaultQuestion];
-    expect(actual.text).toEqual(expected.text);
-  });
+    const { getByRole } = render(
+      <Rejection
+        questions={questions}
+        addQuestion={addQuestion}
+      />
+    );
 
-  it('should add given question for ADD QUESTION with argument', () => {
-    const nextState = rejection(initialState, addQuestion({ text: 'Can I have a car?'}));
-    const rootState = { [name]: nextState };
+    fireEvent.click(getByRole('button', { name: QUESTION_BUTTON_NAME }));
+    const getQuestionElement = () => getByRole('listitem', { name: QUESTION_NAME });
 
-    const actual = selectQuestions(rootState);
-    const expected = [{ text: 'Can I have a car?' }];
-    expect(actual.text).toEqual(expected.text);
-  });
+    await waitFor(getQuestionElement);
 
-  it('should handle UPDATE QUESTION', () => {
-    const initial = rejection(initialState, addQuestion());
-    const rootState = { [name]: initial };
+    expect(addQuestion).toHaveBeenCalledTimes(1);
 
-    const question = selectQuestions(rootState)[0];
-    const updatedQuestion = { ...question, askee: 'Mom' };
-
-    const nextState = rejection(initial, updateQuestion(updatedQuestion));
-    const testState = { [name]: nextState };
-
-    const actual = selectQuestions(testState);
-    const expected = [updatedQuestion];
-    expect(actual).toEqual(expected);
-  });
-
-  it('should handle REMOVE QUESTION', () => {
-    const initial = rejection(initialState, addQuestion());
-    const rootState = { [name]: initial };
-
-    const question = selectQuestions(rootState)[0];
-
-    const nextState = rejection(initial, removeQuestion(question));
-    const testState = { [name]: nextState };
-
-    const actual = selectQuestions(testState);
-    const expected = [];
-    expect(actual).toEqual(expected);
-  });
-});
-
-describe('selectScore', () => {
-  it('should have initial score of 0', () => {
-    const initial = rejection(initialState, addQuestion());
-    const rootState = { [name]: initial };
-
-    const actual = selectScore(rootState);
-    const expected = statusPoints[statuses.default];
-    expect(actual).toEqual(expected);
-  });
-
-  it('should add correct score for rejection', () => {
-    const initial = rejection(initialState, addQuestion());
-    const rootState = { [name]: initial };
-
-    const question = selectQuestions(rootState)[0];
-    const updatedQuestion = { ...question, status: statuses.reject };
-
-    const nextState = { [name]: rejection(initial, updateQuestion(updatedQuestion)) };
-
-    const actual = selectScore(nextState);
-    const expected = statusPoints[statuses.reject];
-    expect(actual).toEqual(expected);
-  });
-
-  it('should add correct score for acceptance', () => {
-    const initial = rejection(initialState, addQuestion());
-    const rootState = { [name]: initial };
-
-    const question = selectQuestions(rootState)[0];
-    const updatedQuestion = { ...question, status: statuses.accept };
-
-    const nextState = { [name]: rejection(initial, updateQuestion(updatedQuestion)) };
-
-    const actual = selectScore(nextState);
-    const expected = statusPoints[statuses.accept];
-    expect(actual).toEqual(expected);
+    const addQuestionElement = getByRole('button', { name: QUESTION_BUTTON_NAME });
+    waitForElementToBeRemoved(addQuestionElement);
   });
 });

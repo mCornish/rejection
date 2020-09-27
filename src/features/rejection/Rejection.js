@@ -1,32 +1,29 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import {
-  addQuestion,
-  removeQuestion,
-  selectQuestions,
-  selectScore,
-  statuses,
-  updateQuestion
-} from './rejectionSlice';
+import PropTypes from 'prop-types';
+
 import QuestionList from '../QuestionList/QuestionList';
 import styles from './Rejection.module.css';
 
-export default function Rejection() {
-  const dispatch = useDispatch();
-  const questions = useSelector(selectQuestions).slice().sort(timestampSort);
-  const score = useSelector(selectScore);
+export default function Rejection({
+  questions = [],
+  score = 0,
+  statuses,
 
+  addQuestion = () => {},
+  removeQuestion = () => {},
+  updateQuestion = () => {},
+}) {
   const [activeQuestionId, setActiveQuestionId] = useState(null);
 
   return (
     <div onClick={() => setActiveQuestionId(null)}>
-      <div className={styles.score}>Score: {score}</div>
+      <div className={styles.score} aria-label="score">Score: {score}</div>
 
-      {(questions[0] || {}).status !== statuses.default && (
+      {(!statuses || (questions[0] || {}).status !== statuses.default) && (
         <button
           className={styles.addQuestion}
           aria-label="Add question"
-          onClick={() => dispatch(addQuestion())}
+          onClick={addQuestion}
         >
           + Add Question
         </button>
@@ -35,19 +32,15 @@ export default function Rejection() {
       <QuestionList
         questions={questions}
         statuses={statuses}
-        removeQuestion={question => dispatch(removeQuestion(question))}
-        updateQuestion={question => dispatch(updateQuestion(question))}
+        removeQuestion={removeQuestion}
+        updateQuestion={updateQuestion}
         setActiveQuestionId={setActiveQuestionId}
         activeQuestionId={activeQuestionId}
       />
     </div>
   );
+}
 
-  function timestampSort(a, b) {
-    return a.timestamp > b.timestamp ?
-      -1 :
-      a.timestamp < b.timestamp ?
-      1 :
-      0
-  }
+Rejection.propTypes = {
+  score: PropTypes.number,
 }

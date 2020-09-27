@@ -3,9 +3,18 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  /* display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: 5em;
-  justify-items: center;
-  padding: 2em 5em; */
+
+  /* Override ul styles */
+  list-style-type: none;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  padding-inline-start: 0;
+}
+
+.listItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: inherit;
+  width: 100%;
 }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+// TODO: Stop using moment
 import moment from 'moment';
 import { statuses } from '../Rejection/rejectionSlice';
 import styles from './Question.module.css';

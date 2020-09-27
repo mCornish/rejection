@@ -22,25 +22,28 @@ export default function QuestionList({
   // const columnCount = questions.length >= 4 ? 4 : questions.length;
 
   return (
-    <div
+    <ul
       className={styles.list}
-      // style={{
-      //   gridTemplateColumns: `repeat(${columnCount}, 1fr)`
-      // }}
+      aria-label="questions"
     >
       {questions.map(question => (
-        <Question
+        <li
           key={question.id}
-          accept={accept(question)}
-          reject={reject(question)}
-          remove={remove(question)}
-          save={save(question)}
-          onClick={() => setActiveQuestionId(question.id)}
-          isActive={activeQuestionId === question.id}
-          {...question}
-        />
+          className={styles.listItem}
+          aria-label="question"
+        >
+          <Question
+            accept={accept(question)}
+            reject={reject(question)}
+            remove={remove(question)}
+            save={save(question)}
+            onClick={() => setActiveQuestionId(question.id)}
+            isActive={activeQuestionId === question.id}
+            {...question}
+          />
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
 
@@ -59,6 +62,6 @@ QuestionList.propTypes = {
     accept: PropTypes.string,
     default: PropTypes.string,
     reject: PropTypes.string,
-  }).isRequired,
+  }),
   updateQuestion: PropTypes.func.isRequired
 }
