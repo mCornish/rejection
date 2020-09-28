@@ -39,8 +39,9 @@ export default function Question({
       <div className={styles.content}>
         <div>
           <span className={styles.timestamp}><strong>{formatTimestamp(timestamp)}</strong></span>
-          <span>, I asked </span>
+          <label htmlFor={`askee${id}`}>, I asked </label>
           <EditableText
+            id={`askee${id}`}
             text={askee}
             onSave={handleAskeeSave}
             placeholder="Lewis Hamilton"
@@ -49,9 +50,10 @@ export default function Question({
           />
           <span>, "</span>
           {!text && (
-            <span><br/>Question: </span>
+            <label htmlFor={`question${id}`}><br/>Question: </label>
           )}
           <EditableText
+            id={`question${id}`}
             text={text}
             onSave={handleTextSave}
             placeholder="Can I drive your Mercedes?"

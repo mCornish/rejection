@@ -5,9 +5,9 @@ import styles from './QuestionList.module.css';
 
 export default function QuestionList({
   questions,
-  removeQuestion,
   statuses,
-  updateQuestion,
+  removeQuestion = () => {},
+  updateQuestion = () => {},
   activeQuestionId,
   setActiveQuestionId,
 }) {
@@ -57,11 +57,11 @@ QuestionList.propTypes = {
       text: PropTypes.string
     })
   ).isRequired,
-  removeQuestion: PropTypes.func.isRequired,
+  removeQuestion: PropTypes.func,
   statuses: PropTypes.shape({
     accept: PropTypes.string,
     default: PropTypes.string,
     reject: PropTypes.string,
   }),
-  updateQuestion: PropTypes.func.isRequired
+  updateQuestion: PropTypes.func
 }

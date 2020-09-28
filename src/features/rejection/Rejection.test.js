@@ -1,16 +1,18 @@
 import React from 'react';
 import { render, fireEvent, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
+import { axe, toHaveNoViolations } from 'jest-axe';
+expect.extend(toHaveNoViolations);
+
 import Rejection from './Rejection';
 
 const QUESTION_BUTTON_NAME = 'Add question';
 const QUESTION_LIST_NAME = 'questions';
-const QUESTION_NAME = 'question';
 const SCORE_NAME = 'score';
 
-describe('Rejection', () => {
-  test('renders initial state', () => {
-    const { getByRole } = render(
+describe('<Rejection />', () => {
+  test('renders initial state', async () => {
+    const { container, getByRole } = render(
       <Rejection />
     );
 
@@ -22,27 +24,55 @@ describe('Rejection', () => {
 
     const questionListElement = getByRole('list', { name: QUESTION_LIST_NAME });
     expect(questionListElement).toBeInTheDocument();
+
+    // Check initial state accessibility
+    const accessibility = await axe(container);
+    expect(accessibility).toHaveNoViolations();
   });
 
-  test('adds question', async () => {
-    const questions = [{ id: '1', timestamp: Date.now() }];
-    const addQuestion = jest.fn(() => questions.push({}));
+  test('calls add question', async () => {
+    const addQuestion = jest.fn();
 
-    const { getByRole } = render(
+    const { container, getByRole } = render(
       <Rejection
-        questions={questions}
         addQuestion={addQuestion}
       />
     );
 
     fireEvent.click(getByRole('button', { name: QUESTION_BUTTON_NAME }));
-    const getQuestionElement = () => getByRole('listitem', { name: QUESTION_NAME });
 
-    await waitFor(getQuestionElement);
-
-    expect(addQuestion).toHaveBeenCalledTimes(1);
+    const getAddQuestionCalled = () => expect(addQuestion).toHaveBeenCalledTimes(1);
+    await waitFor(getAddQuestionCalled);
 
     const addQuestionElement = getByRole('button', { name: QUESTION_BUTTON_NAME });
     waitForElementToBeRemoved(addQuestionElement);
+
+    // Check accessibility of "adds question" state
+    const accessibility = await axe(container);
+    expect(accessibility).toHaveNoViolations();
+  });
+
+  test('renders correct score', async () => {
+    let score = 7;
+    const { getByRole } = render(
+      <Rejection
+        score={score}
+      />
+    );
+
+    const scoreElement = getByRole('generic', { name: SCORE_NAME });
+    expect(scoreElement).toHaveTextContent(`Score: ${score}`);
+  });
+
+  test('renders large score', async () => {
+    let score = 125477;
+    const { getByRole } = render(
+      <Rejection
+        score={score}
+      />
+    );
+
+    const scoreElement = getByRole('generic', { name: SCORE_NAME });
+    expect(scoreElement).toHaveTextContent(`Score: ${score}`);
   });
 });

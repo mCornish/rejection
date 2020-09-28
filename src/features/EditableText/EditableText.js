@@ -5,8 +5,11 @@ import styles from './EditableText.module.css';
 export default function EditableText({
   defaultIsEditing = false,
   isActive = true,
+
   onChange = () => {},
   onSave = () => {},
+
+  id,
   placeholder,
   text = '',
 }) {
@@ -27,6 +30,7 @@ export default function EditableText({
     <div className={`EditableText ${styles.form}`}>
       <input
         ref={node => (textInput = node)}
+        id={id}
         onChange={() => handleChange(textInput.value)}
         onBlur={() => handleBlur(textInput.value)}
         placeholder={placeholder}
@@ -61,8 +65,11 @@ export default function EditableText({
 EditableText.propTypes = {
   defaultIsEditing: PropTypes.bool,
   isActive: PropTypes.bool,
+
   onChange: PropTypes.func,
   onSave: PropTypes.func,
+
+  id: PropTypes.string,
   placeholder: PropTypes.string,
   text: PropTypes.string,
 }
