@@ -16,7 +16,10 @@ export default function Rejection({
   const [activeQuestionId, setActiveQuestionId] = useState(null);
 
   return (
-    <div onClick={() => setActiveQuestionId(null)}>
+    <div
+      onClick={() => setActiveQuestionId(null)}
+      className={styles.container}
+    >
       <div className={styles.score} aria-label="score">Score: {score}</div>
 
       {(!statuses || (questions[0] || {}).status !== statuses.default) && (

@@ -64,7 +64,7 @@ export default function Question({
           {status === statuses.default ? (
             <span>{'I\'m waiting to hear back. 🤔'}</span>
           ) : (
-            <span>{`they said "${status === statuses.accept ? 'Yes 😞' : 'No! 😄🎉'}"`}</span>
+            <span>{`they said "${status === statuses.accept ? 'Yes 🙂' : 'No! 😄🎉'}"`}</span>
           )}
         </div>
       </div>

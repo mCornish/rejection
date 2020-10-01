@@ -12,6 +12,7 @@ const SCORE_NAME = 'score';
 
 describe('<Rejection />', () => {
   test('renders initial state', async () => {
+    // TODO: Use screen (https://kentcdodds.com/blog/common-mistakes-with-react-testing-library#not-using-screen)
     const { container, getByRole } = render(
       <Rejection />
     );
@@ -39,9 +40,11 @@ describe('<Rejection />', () => {
       />
     );
 
+    //TODO: Use @testing-library/user-event (https://kentcdodds.com/blog/common-mistakes-with-react-testing-library#not-using-testing-libraryuser-event)
     fireEvent.click(getByRole('button', { name: QUESTION_BUTTON_NAME }));
 
     const getAddQuestionCalled = () => expect(addQuestion).toHaveBeenCalledTimes(1);
+    // TODO: Use screen.findByRole (https://kentcdodds.com/blog/common-mistakes-with-react-testing-library#using-waitfor-to-wait-for-elements-that-can-be-queried-with-find)
     await waitFor(getAddQuestionCalled);
 
     const addQuestionElement = getByRole('button', { name: QUESTION_BUTTON_NAME });
